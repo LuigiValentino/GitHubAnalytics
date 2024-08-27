@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHubAnalytics</title>
+    <link rel="shortcut icon" href="../static/github-icon-2.svg" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />    
+    <style>
+        body {
+            background-color: #ffffff;
+            color: #1a202c;
+            font-family: 'Inter', sans-serif;
+        }
+        .navbar {
+            color: #2563eb;
+        }
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            max-width: 280px; /* Limita el ancho máximo */
+            flex: 1 1 280px; /* Permite que las tarjetas mantengan su tamaño */
+            box-sizing: border-box;
+        }
+        .profile-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            gap: 20px;
+        }
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .profile-card img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid white;
+            object-fit: cover;
+        }
+        .profile-card .info {
+            text-align: center;
+        }
+        .profile-card .info h2 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .profile-card .info p {
+            margin: 2px 0;
+            font-size: 0.875rem;
+            color: #4a5568;
+        }
+        .profile-card .info a {
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 0.875rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            font-size: 1rem;
+        }
+        .stats-container div {
+            text-align: center;
+            flex-grow: 1;
+            padding: 10px 0;
+            border-top: 1px solid #e2e8f0;
+        }
+        .repo-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-left: #1a202c 5px solid;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease;
+            max-width: 280px;
+            max-height: 520px; /* Limita el ancho máximo */
+            flex: 1 1 280px; /* Permite que las tarjetas mantengan su tamaño */
+            box-sizing: border-box;
+        }
+        .repo-card img {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 10px;
+            border-radius: 50%;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .repo-card:hover {
+            transform: translateY(-4px);
+        }
+        .repo-card h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .repo-card p {
+            font-size: 0.875rem;
+            color: #4a5568;
+        }
+        .repo-card a {
+            margin-top: 10px;
+            color: #2563eb;
+            font-size: 0.875rem;
+        }
+        .spinner {
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #2563eb;
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        footer {
+            color: #1a202c;
+            text-align: center;
+        }
+        .repos-container {
+            display: flex;
+            justify-content: center; /* Centra los elementos cuando hay menos columnas */
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .charts-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar p-4 top-0 left-0 right-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold ">GitHubAnalytics <a href="https://github.com"><i class="fab fa-github-alt" style="color: #1d4ed8;"></i></a></h1>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto p-4 mt-20">
+        <section class="mb-8 text-center">
+            <h2 class="text-3xl font-bold mb-4">Consulta los Usuarios de GitHub</h2>
+            <p class="mb-4">Consulta y averigua estadísticas de usuarios de GitHub, como sus repositorios, lenguajes, seguidores y demás estadísticas de manera más rápida y eficaz con ilimitadas búsquedas gratuitas utilizando la API oficial de GitHub. Para cualquier duda o consulta, recomendamos ver el repositorio <a href="https://github.com/LuigiValentino/GitHubAnalytics" style="text-decoration: underline;">aquí</a> o enviar un correo a <a href="mailto:luigiadduccidev@gmail.com" style="text-decoration: underline;">luigiadduccidev@gmail.com</a> y con gusto te ayudaremos con cualquier duda o consulta sobre el proyecto.</p>
+<hr>
+            <form id="userForm" class="mb-6 mt-2">
+                <div class="flex justify-center">
+                    <input type="text" id="username" placeholder="Ingrese el nombre de usuario de GitHub (EJ: LuigiValentino)" class="border p-2 rounded-l w-2/3 max-w-lg shadow-md" required>
+                    <button type="submit" class="btn-primary py-2 px-4 rounded-r shadow-md">
+                        Buscar
+                    </button>
+                </div>
+            </form>
+            <div id="spinner" class="hidden">
+                <div class="spinner"></div>
+            </div>
+            <div id="result" class="user-info mb-6"></div>
+        </section>
+
+        <!-- User Profile and Statistics -->
+        <section id="user-profile" class="mb-12 hidden">
+            <div class="profile-card">
+                <img id="user-avatar" src="" alt="Avatar">
+                <div class="info">
+                    <h2 id="user-name" class="text-xl font-semibold mt-4"></h2>
+                    <p id="user-bio" class="text-gray-600"></p>
+                    <p id="user-location" class="mt-2"></p>
+                    <p id="user-email" class="mt-2"></p>
+                    <a id="user-profile-link" href="#" target="_blank" class="btn-primary mt-4 inline-block py-2 px-4 rounded">Ver perfil en GitHub <i class="fas fa-share" style="color: white;"></i></a>
+                </div>
+                <div class="stats-container">
+                    <div>
+                        <p class="text-lg font-semibold">Seguidores</p>
+                        <p id="user-followers" class="text-2xl font-bold"></p>
+                    </div>
+                    <div>
+                        <p class="text-lg font-semibold">Siguiendo</p>
+                        <p id="user-following" class="text-2xl font-bold"></p>
+                    </div>
+                    <div>
+                        <p class="text-lg font-semibold">Repositorios Públicos</p>
+                        <p id="user-repos" class="text-2xl font-bold"></p>
+                    </div>
+                    <div>
+                        <p class="text-lg font-semibold">Gists Públicos</p>
+                        <p id="user-gists" class="text-2xl font-bold"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Repositories and Charts -->
+        <section class="grid lg:grid-cols-2 gap-8">
+            <div id="repos" class="repos-container"></div>
+            <div class="charts-container">
+                <canvas id="languageChart"></canvas>
+                <canvas id="starsChart"></canvas>
+                <canvas id="forksChart"></canvas>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        let languageChart, starsChart, forksChart;
+
+        document.getElementById('userForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            document.getElementById('spinner').classList.remove('hidden');
+            document.getElementById('user-profile').classList.add('hidden');
+            limpiarContenido();  // Limpiar contenido antes de buscar
+            obtenerDatosUsuario(username);
+        });
+
+        function limpiarContenido() {
+            document.getElementById('result').innerHTML = '';
+            document.getElementById('repos').innerHTML = '';
+            if (languageChart) languageChart.destroy();
+            if (starsChart) starsChart.destroy();
+            if (forksChart) forksChart.destroy();
+        }
+
+        async function obtenerDatosUsuario(username) {
+            const resultDiv = document.getElementById('result');
+            const reposDiv = document.getElementById('repos');
+            resultDiv.innerHTML = '';
+            reposDiv.innerHTML = '';
+
+            try {
+                const response = await fetch(`/api/stats?username=${username}`);
+                const data = await response.json();
+
+                document.getElementById('spinner').classList.add('hidden');
+
+                if (data.error) {
+                    resultDiv.innerHTML = `<p class="text-red-500">${data.error}</p>`;
+                    return;
+                }
+
+                mostrarDatosUsuario(data.user);
+                mostrarRepositorios(data.repos);
+                generarGraficoLenguajes(data.languages);
+                generarGraficoStars(data.repos.map(repo => repo.name), data.stars_count);
+                generarGraficoForks(data.repos.map(repo => repo.name), data.forks_count);
+
+                document.getElementById('user-profile').classList.remove('hidden');
+
+            } catch (error) {
+                document.getElementById('spinner').classList.add('hidden');
+                resultDiv.innerHTML = `<p class="text-red-500">Error al obtener los datos</p>`;
+            }
+        }
+
+        function mostrarDatosUsuario(user) {
+            document.getElementById('user-avatar').src = user.avatar_url;
+            document.getElementById('user-name').innerText = user.name || user.login;
+            document.getElementById('user-bio').innerText = user.bio || "Sin biografía disponible";
+            document.getElementById('user-location').innerText = user.location ? `Ubicación: ${user.location}` : "";
+            document.getElementById('user-email').innerText = user.email ? `Email: ${user.email}` : "";
+            document.getElementById('user-followers').innerText = user.followers;
+            document.getElementById('user-following').innerText = user.following;
+            document.getElementById('user-repos').innerText = user.public_repos;
+            document.getElementById('user-gists').innerText = user.public_gists;
+            document.getElementById('user-profile-link').href = user.html_url;
+        }
+
+        function mostrarRepositorios(repos) {
+            const reposDiv = document.getElementById('repos');
+            if (repos.length === 0) {
+                reposDiv.innerHTML = '<p class="text-gray-500">Este usuario no tiene repositorios públicos.</p>';
+            } else {
+                repos.forEach(repo => {
+                    reposDiv.innerHTML += `
+                        <div class="card repo-card">
+                            <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="Repo">
+                            <h3 class="text-lg font-semibold"><a href="${repo.url}" target="_blank" class="text-blue-500">${repo.name}</a></h3>
+                            <p class="text-gray-600">${repo.description || "Sin descripción"}</p>
+                            <p class="mt-2"><i class="fas fa-star"></i> <strong>Estrellas:</strong> ${repo.stars} | 
+                                <i class="fas fa-code-branch"></i> <strong>Forks:</strong> ${repo.forks} | 
+                                <i class="fas fa-exclamation-circle"></i> <strong>Issues Abiertas:</strong> ${repo.issues}</p>
+                            <a href="${repo.url}" target="_blank" class="text-blue-500 hover:underline mt-4 block">Visitar repositorio</a>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        function generarGraficoLenguajes(languages) {
+            const ctx = document.getElementById('languageChart').getContext('2d');
+            const data = {
+                labels: Object.keys(languages),
+                datasets: [{
+                    label: 'Repositorios por Lenguaje',
+                    data: Object.values(languages),
+                    backgroundColor: ['#FDC827', '#04BA71', '#04454D', '#FCA5A5', '#A78BFA'],
+                }]
+            };
+            const config = {
+                type: 'pie',
+                data: data,
+            };
+            languageChart = new Chart(ctx, config);
+        }
+
+        function generarGraficoStars(repoNames, starsCount) {
+            const ctx = document.getElementById('starsChart').getContext('2d');
+            const data = {
+                labels: repoNames,
+                datasets: [{
+                    label: 'Estrellas por Repositorio',
+                    data: starsCount,
+                    backgroundColor: '#04BA71',
+                }]
+            };
+            const config = {
+                type: 'bar',
+                data: data,
+            };
+            starsChart = new Chart(ctx, config);
+        }
+
+        function generarGraficoForks(repoNames, forksCount) {
+            const ctx = document.getElementById('forksChart').getContext('2d');
+            const data = {
+                labels: repoNames,
+                datasets: [{
+                    label: 'Forks por Repositorio',
+                    data: forksCount,
+                    backgroundColor: '#04454D',
+                }]
+            };
+            const config = {
+                type: 'bar',
+                data: data,
+            };
+            forksChart = new Chart(ctx, config);
+        }
+    </script>
+</body>
+</html>
