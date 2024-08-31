@@ -1,0 +1,153 @@
+body {
+            background-color: #ffffff;
+            color: #1a202c;
+            font-family: "IBM Plex Sans", sans-serif;
+        }
+        .navbar {
+            color: #2563eb;
+        }
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            max-width: 280px; 
+            flex: 1 1 280px; 
+            box-sizing: border-box;
+        }
+        
+        .profile-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            gap: 20px;
+        }
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .profile-card img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid white;
+            object-fit: cover;
+        }
+        .profile-card .info {
+            text-align: center;
+        }
+        .profile-card .info h2 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .profile-card .info p {
+            margin: 2px 0;
+            font-size: 0.875rem;
+            color: #4a5568;
+        }
+        .profile-card .info a {
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 0.875rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            font-size: 1rem;
+        }
+        .stats-container div {
+            text-align: center;
+            flex-grow: 1;
+            padding: 10px 0;
+            border-top: 1px solid #e2e8f0;
+        }
+        .repo-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-left: #1a202c 5px solid;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease;
+            max-width: 280px;
+            max-height: 520px; 
+            flex: 1 1 280px; 
+            box-sizing: border-box;
+        }
+        .repo-card img {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 10px;
+            border-radius: 50%;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .repo-card:hover {
+            transform: translateY(-4px);
+        }
+        .repo-card h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .repo-card p {
+            font-size: 0.875rem;
+            color: #4a5568;
+        }
+        .repo-card a {
+            margin-top: 10px;
+            color: #2563eb;
+            font-size: 0.875rem;
+        }
+        .spinner {
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #2563eb;
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        footer {
+            color: #1a202c;
+            text-align: center;
+        }
+        .repos-container {
+            display: flex;
+            justify-content: center; 
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .charts-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
